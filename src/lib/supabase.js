@@ -38,7 +38,11 @@ export const getCurrentUser = async () => {
     if (error) throw error
     return user
   } catch (error) {
-    console.error('❌ Get user failed:', error.message)
+    if (error.message === 'Auth session missing!') {
+      console.info('ℹ️ No active user session (this is normal for login-free app)')
+    } else {
+      console.error('❌ Get user failed:', error.message)
+    }
     return null
   }
 }
