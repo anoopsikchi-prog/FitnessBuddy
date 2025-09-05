@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { testConnection, startAnonymously, getCurrentUser, signOut } from '../src/lib/supabase.js'
+import { testConnection, startAnonymously, getCurrentUser, signOut } from '../src/lib/supabase'
 
 interface User {
   id: string
-  // Add other user properties as needed
+  email?: string
 }
 
 export default function HomePage() {
@@ -71,10 +71,12 @@ export default function HomePage() {
   // Loading screen
   if (loading) {
     return (
-      <div style={styles.loadingContainer}>
-        <h2>🏋️ Starting FitnessBuddy...</h2>
-        <p>Connecting to your fitness journey...</p>
-        <div style={styles.loadingSpinner}>⏳</div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Starting FitnessBuddy...</h2>
+          <p className="text-gray-600">Connecting to your fitness journey...</p>
+          <div className="mt-4 text-4xl">⏳</div>
+        </div>
       </div>
     )
   }
@@ -82,356 +84,168 @@ export default function HomePage() {
   // Connection failed screen
   if (connectionStatus === 'failed') {
     return (
-      <div style={styles.errorContainer}>
-        <h2>❌ Connection Issue</h2>
-        <p>Unable to connect to FitnessBuddy services.</p>
-        <p><strong>Check:</strong> Your internet connection and Supabase configuration.</p>
-        <button onClick={initializeApp} style={styles.retryButton}>
-          🔄 Retry Connection
-        </button>
+      <div className="min-h-screen bg-red-50 flex items-center justify-center">
+        <div className="text-center text-red-600 p-8">
+          <h2 className="text-2xl font-bold mb-4">❌ Connection Issue</h2>
+          <p className="mb-2">Unable to connect to FitnessBuddy services.</p>
+          <p className="mb-4"><strong>Check:</strong> Your internet connection and Supabase configuration.</p>
+          <button 
+            onClick={initializeApp}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+          >
+            🔄 Retry Connection
+          </button>
+        </div>
       </div>
     )
   }
 
   return (
-    <div style={styles.appContainer}>
-      {/* 🔍 Debug Status Bar (Remove in production) */}
-      <div style={styles.statusBar}>
+    <div className="min-h-screen bg-gray-50 font-sans">
+      {/* Debug Status Bar */}
+      <div className="fixed top-0 right-0 bg-gray-800 text-white text-xs px-4 py-2 rounded-bl-lg z-50">
         <span>DB: {connectionStatus}</span>
         {user && <span> | User: {user.id.slice(0, 8)}...</span>}
         <span> | Phase: {currentPhase}</span>
       </div>
 
-      {/* Main App Content */}
-      {renderCurrentPhase()}
-    </div>
-  )
-
-  function renderCurrentPhase() {
-    switch (currentPhase) {
-      case 'welcome':
-        return (
-          <div style={styles.welcomeContainer}>
-            <div style={styles.heroSection}>
-              <h1 style={styles.heroTitle}>
-                🏋️ Your AI Fitness Buddy is here! 💪
-              </h1>
-              <p style={styles.heroSubtitle}>
-                Start in minutes — no login, no signup. Just a friendly onboarding that shapes a plan around your goals, barriers and preferences.
-              </p>
+      {/* Main Content */}
+      {currentPhase === 'welcome' && (
+        <div className="pt-8">
+          <div className="text-center py-16 px-8 max-w-6xl mx-auto">
+            <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Your AI Fitness Buddy is here! 💪
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+              Start in minutes — no login, no signup. Just a friendly onboarding that shapes a plan around your goals, barriers and preferences.
+            </p>
+            
+            <button 
+              onClick={handleGetStarted}
+              disabled={loading}
+              className="px-8 py-4 bg-blue-600 text-white text-lg font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 mb-12"
+            >
+              {loading ? '⏳ Starting...' : '🚀 Get Started (No Login)'}
+            </button>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
+              <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
+                <div className="text-4xl mb-4">🎯</div>
+                <h3 className="font-bold text-lg mb-2">Personalized Goals</h3>
+                <p className="text-gray-600">Pick your goal and get a plan that fits your life.</p>
+              </div>
               
-              <button 
-                onClick={handleGetStarted}
-                style={styles.primaryButton}
-                disabled={loading}
-              >
-                {loading ? '⏳ Starting...' : '🚀 Get Started (No Login)'}
-              </button>
+              <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
+                <div className="text-4xl mb-4">🤖</div>
+                <h3 className="font-bold text-lg mb-2">AI Coach Support</h3>
+                <p className="text-gray-600">Encouraging nudges, clear steps, and Plan B options.</p>
+              </div>
               
-              <div style={styles.featuresGrid}>
-                <div style={styles.featureCard}>
-                  <div style={styles.featureIcon}>🎯</div>
-                  <h3>Personalized Goals</h3>
-                  <p>Pick your goal and get a plan that fits your life.</p>
-                </div>
-                
-                <div style={styles.featureCard}>
-                  <div style={styles.featureIcon}>🤖</div>
-                  <h3>AI Coach Support</h3>
-                  <p>Encouraging nudges, clear steps, and Plan B options.</p>
-                </div>
-                
-                <div style={styles.featureCard}>
-                  <div style={styles.featureIcon}>📊</div>
-                  <h3>Track Progress</h3>
-                  <p>Tiny daily wins and see progress at a glance.</p>
-                </div>
-                
-                <div style={styles.featureCard}>
-                  <div style={styles.featureIcon}>💚</div>
-                  <h3>Sustainable Habits</h3>
-                  <p>Build routines that survive busy weeks.</p>
-                </div>
+              <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
+                <div className="text-4xl mb-4">📊</div>
+                <h3 className="font-bold text-lg mb-2">Track Progress</h3>
+                <p className="text-gray-600">Tiny daily wins and see progress at a glance.</p>
+              </div>
+              
+              <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
+                <div className="text-4xl mb-4">💚</div>
+                <h3 className="font-bold text-lg mb-2">Sustainable Habits</h3>
+                <p className="text-gray-600">Build routines that survive busy weeks.</p>
               </div>
             </div>
           </div>
-        )
+        </div>
+      )}
 
-      case 'onboarding':
-        return (
-          <div style={styles.onboardingContainer}>
-            <h2>🎯 Welcome to Your Fitness Journey!</h2>
-            <div style={styles.successMessage}>
-              <p>✅ <strong>Phase 1 Complete!</strong></p>
-              <p>✅ Database connected successfully</p>
-              <p>✅ Anonymous session created</p>
-              <p>✅ User ID: <code>{user?.id}</code></p>
-            </div>
-            
-            <div style={styles.nextStepsCard}>
-              <h3>📋 Ready for Phase 2: Onboarding Flow</h3>
-              <p>Next, we&apos;ll add:</p>
-              <ul style={styles.taskList}>
-                <li>✅ Goal selection (Weight loss, Muscle gain, General fitness)</li>
-                <li>✅ Activity level assessment</li>
-                <li>✅ Barrier identification</li>
-                <li>✅ Workout preferences</li>
-                <li>✅ Personalized plan generation</li>
-              </ul>
-            </div>
-
-            <div style={styles.buttonGroup}>
-              <button 
-                onClick={() => setCurrentPhase('main')}
-                style={styles.primaryButton}
-              >
-                🚀 Continue to Phase 2 Setup
-              </button>
-              
-              <button 
-                onClick={handleSignOut}
-                style={styles.secondaryButton}
-              >
-                🔙 Back to Welcome
-              </button>
-            </div>
+      {currentPhase === 'onboarding' && (
+        <div className="py-12 px-8 max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-8">🎯 Welcome to Your Fitness Journey!</h2>
+          
+          <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-8">
+            <p className="text-green-800"><strong>✅ Phase 1 Complete!</strong></p>
+            <p className="text-green-700">✅ Database connected successfully</p>
+            <p className="text-green-700">✅ Anonymous session created</p>
+            <p className="text-green-700">✅ User ID: <code className="bg-green-100 px-2 py-1 rounded">{user?.id}</code></p>
           </div>
-        )
+          
+          <div className="bg-white p-8 rounded-xl shadow-lg mb-8">
+            <h3 className="text-xl font-bold mb-4">📋 Ready for Phase 2: Onboarding Flow</h3>
+            <p className="mb-4">Next, we'll add:</p>
+            <ul className="list-disc list-inside space-y-2 text-gray-700">
+              <li>✅ Goal selection (Weight loss, Muscle gain, General fitness)</li>
+              <li>✅ Activity level assessment</li>
+              <li>✅ Barrier identification</li>
+              <li>✅ Workout preferences</li>
+              <li>✅ Personalized plan generation</li>
+            </ul>
+          </div>
 
-      case 'main':
-        return (
-          <div style={styles.mainContainer}>
-            <div style={styles.header}>
-              <h2>🏠 FitnessBuddy Dashboard</h2>
-              <button onClick={handleSignOut} style={styles.secondaryButton}>
-                👋 Sign Out
-              </button>
-            </div>
+          <div className="flex gap-4 justify-center">
+            <button 
+              onClick={() => setCurrentPhase('main')}
+              className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700"
+            >
+              🚀 Continue to Phase 2 Setup
+            </button>
             
-            <div style={styles.dashboardGrid}>
-              <div style={styles.dashboardCard}>
-                <h3>🎯 Your Progress</h3>
+            <button 
+              onClick={handleSignOut}
+              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+            >
+              🔙 Back to Welcome
+            </button>
+          </div>
+        </div>
+      )}
+
+      {currentPhase === 'main' && (
+        <div className="py-12 px-8 max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold">🏠 FitnessBuddy Dashboard</h2>
+            <button 
+              onClick={handleSignOut}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+            >
+              👋 Sign Out
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white p-6 rounded-xl shadow-lg">
+              <h3 className="font-bold text-lg mb-4">🎯 Your Progress</h3>
+              <div className="space-y-2 text-sm">
                 <p>✅ Phase 1: Foundation - Complete!</p>
                 <p>📋 Phase 2: Onboarding - Ready to build</p>
                 <p>📊 Phase 3: Habit tracking - Coming next</p>
                 <p>📈 Phase 4: Progress charts - Coming soon</p>
                 <p>🤖 Phase 5: AI coach - Final phase</p>
               </div>
-              
-              <div style={styles.dashboardCard}>
-                <h3>📊 Session Info</h3>
+            </div>
+            
+            <div className="bg-white p-6 rounded-xl shadow-lg">
+              <h3 className="font-bold text-lg mb-4">📊 Session Info</h3>
+              <div className="space-y-2 text-sm">
                 <p><strong>User ID:</strong> {user?.id}</p>
                 <p><strong>Session:</strong> Anonymous</p>
                 <p><strong>Status:</strong> Active ✅</p>
                 <p><strong>Database:</strong> Connected ✅</p>
               </div>
-              
-              <div style={styles.dashboardCard}>
-                <h3>🚀 Next Steps</h3>
-                <p>Your FitnessBuddy foundation is solid!</p>
-                <p>Ready to add:</p>
-                <ul>
-                  <li>User onboarding flow</li>
-                  <li>Fitness goal setting</li>
-                  <li>Habit tracking system</li>
-                  <li>Progress monitoring</li>
-                </ul>
-              </div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-xl shadow-lg">
+              <h3 className="font-bold text-lg mb-4">🚀 Next Steps</h3>
+              <p className="text-sm mb-2">Your FitnessBuddy foundation is solid!</p>
+              <p className="text-sm mb-2">Ready to add:</p>
+              <ul className="text-sm space-y-1">
+                <li>• User onboarding flow</li>
+                <li>• Fitness goal setting</li>
+                <li>• Habit tracking system</li>
+                <li>• Progress monitoring</li>
+              </ul>
             </div>
           </div>
-        )
-
-      default:
-        return <div>Unknown phase: {currentPhase}</div>
-    }
-  }
-}
-
-// 🎨 Styles (can be moved to CSS modules later)
-const styles = {
-  appContainer: {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    minHeight: '100vh',
-    backgroundColor: '#f8fafc'
-  },
-  
-  statusBar: {
-    position: 'fixed' as const,
-    top: 0,
-    right: 0,
-    padding: '8px 16px',
-    backgroundColor: '#1f2937',
-    color: 'white',
-    fontSize: '12px',
-    zIndex: 1000,
-    borderBottomLeftRadius: '8px'
-  },
-  
-  loadingContainer: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-    textAlign: 'center' as const,
-    backgroundColor: '#f8fafc'
-  },
-  
-  loadingSpinner: {
-    fontSize: '2rem'
-  },
-  
-  errorContainer: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-    textAlign: 'center' as const,
-    backgroundColor: '#fef2f2',
-    color: '#dc2626',
-    padding: '2rem'
-  },
-  
-  welcomeContainer: {
-    paddingTop: '2rem'
-  },
-  
-  heroSection: {
-    textAlign: 'center' as const,
-    padding: '4rem 2rem',
-    maxWidth: '1200px',
-    margin: '0 auto'
-  },
-  
-  heroTitle: {
-    fontSize: '3rem',
-    fontWeight: 'bold',
-    marginBottom: '1rem',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent'
-  },
-  
-  heroSubtitle: {
-    fontSize: '1.2rem',
-    color: '#6b7280',
-    marginBottom: '2rem',
-    maxWidth: '600px',
-    margin: '0 auto 2rem'
-  },
-  
-  primaryButton: {
-    padding: '16px 32px',
-    fontSize: '18px',
-    fontWeight: 'bold',
-    color: 'white',
-    backgroundColor: '#6366f1',
-    border: 'none',
-    borderRadius: '12px',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    marginBottom: '3rem'
-  },
-  
-  secondaryButton: {
-    padding: '12px 24px',
-    fontSize: '16px',
-    color: '#6b7280',
-    backgroundColor: 'white',
-    border: '1px solid #d1d5db',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    transition: 'all 0.2s'
-  },
-  
-  featuresGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '2rem',
-    marginTop: '3rem'
-  },
-  
-  featureCard: {
-    backgroundColor: 'white',
-    padding: '2rem',
-    borderRadius: '16px',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-    textAlign: 'center' as const
-  },
-  
-  featureIcon: {
-    fontSize: '3rem',
-    marginBottom: '1rem'
-  },
-  
-  onboardingContainer: {
-    padding: '3rem 2rem',
-    maxWidth: '800px',
-    margin: '0 auto'
-  },
-  
-  successMessage: {
-    backgroundColor: '#ecfdf5',
-    border: '1px solid #10b981',
-    borderRadius: '12px',
-    padding: '1.5rem',
-    marginBottom: '2rem'
-  },
-  
-  nextStepsCard: {
-    backgroundColor: 'white',
-    padding: '2rem',
-    borderRadius: '12px',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-    marginBottom: '2rem'
-  },
-  
-  taskList: {
-    textAlign: 'left' as const,
-    paddingLeft: '1rem'
-  },
-  
-  buttonGroup: {
-    display: 'flex',
-    gap: '1rem',
-    justifyContent: 'center'
-  },
-  
-  mainContainer: {
-    padding: '3rem 2rem',
-    maxWidth: '1200px',
-    margin: '0 auto'
-  },
-  
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '2rem'
-  },
-  
-  dashboardGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '2rem'
-  },
-  
-  dashboardCard: {
-    backgroundColor: 'white',
-    padding: '2rem',
-    borderRadius: '12px',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-  },
-  
-  retryButton: {
-    padding: '12px 24px',
-    fontSize: '16px',
-    color: 'white',
-    backgroundColor: '#ef4444',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    marginTop: '1rem'
-  }
+        </div>
+      )}
+    </div>
+  )
 }
