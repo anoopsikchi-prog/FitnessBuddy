@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, User } from '@supabase/supabase-js'
 
 // Your actual Supabase credentials
 const supabaseUrl = 'https://htvpzehghpxnkrakddkp.supabase.co'
@@ -6,52 +6,69 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+interface ConnectionTestResult {
+  success: boolean
+  hasSession?: boolean
+  error?: string
+}
+
+interface AuthResult {
+  success: boolean
+  user?: User
+  error?: string
+}
+
+interface SignOutResult {
+  success: boolean
+  error?: string
+}
+
 // Connection testing
-export const testConnection = async () => {
+export const testConnection = async (): Promise<ConnectionTestResult> => {
   try {
     const { data: { session }, error } = await supabase.auth.getSession()
     console.log('✅ Supabase connection successful')
     return { success: true, hasSession: !!session }
   } catch (error) {
-    console.error('❌ Supabase connection failed:', error.message)
-    return { success: false, error: error.message }
+    console.error('❌ Supabase connection failed:', (error as Error).message)
+    return { success: false, error: (error as Error).message }
   }
 }
 
 // Anonymous authentication
-export const startAnonymously = async () => {
+export const startAnonymously = async (): Promise<AuthResult> => {
   try {
     const { data, error } = await supabase.auth.signInAnonymously()
     if (error) throw error
     console.log('✅ Anonymous sign-in successful - User ID:', data.user.id)
     return { success: true, user: data.user }
   } catch (error) {
-    console.error('❌ Anonymous sign-in failed:', error.message)
-    return { success: false, error: error.message }
+    console.error('❌ Anonymous sign-in failed:', (error as Error).message)
+    return { success: false, error: (error as Error).message }
   }
 }
 
 // Get current user
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (): Promise<User | null> => {
   try {
     const { data: { user }, error } = await supabase.auth.getUser()
     if (error) throw error
     return user
   } catch (error) {
-    console.error('❌ Get user failed:', error.message)
+    console.error('❌ Get user failed:', (error as Error).message)
     return null
   }
 }
 
 // Sign out
-export const signOut = async () => {
+export const signOut = async (): Promise<SignOutResult> => {
   try {
     const { error } = await supabase.auth.signOut()
     if (error) throw error
     console.log('✅ Signed out successfully')
     return { success: true }
   } catch (error) {
-    console.error('❌ Sign out failed:', error.message)
-    return { success: false, error: error.message }
+    console.error('❌ Sign out failed:', (error as Error).message)
+    return { success: false, error: (error as Error).message }
   }
 }
