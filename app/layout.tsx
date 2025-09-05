@@ -15,10 +15,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <header className="container py-4 flex items-center justify-between">
             <Link href="/" className="text-xl font-semibold hover:text-indigo-600 transition-colors">FitBuddy</Link>
-            <nav className="flex items-center gap-2">
-              <Link className="btn-ghost" href="/onboarding">Get Started</Link>
-              <Link className="btn-primary" href="/app">Open App</Link>
-            </nav>
           </header>
           <main className="container pb-20">{children}</main>
           <footer className="container py-10 text-sm text-slate-600">
