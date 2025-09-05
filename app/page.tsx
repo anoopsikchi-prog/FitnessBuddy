@@ -22,16 +22,18 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {features.map((f) => (
-          <div key={f.title} className="card group hover:scale-105 transition-transform duration-200">
-            <div className="card-body">
-              <f.icon className="h-8 w-8 text-indigo-600 group-hover:text-indigo-700 transition-colors" />
-              <h3 className="mt-4 font-semibold text-lg">{f.title}</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">{f.desc}</p>
+      <section className="overflow-hidden">
+        <div className="scroll-loop flex gap-6 whitespace-nowrap">
+          {[...features, ...features].map((f, index) => (
+            <div key={`${f.title}-${index}`} className="card group hover:scale-105 transition-transform duration-200 flex-shrink-0 w-80">
+              <div className="card-body">
+                <f.icon className="h-8 w-8 text-indigo-600 group-hover:text-indigo-700 transition-colors" />
+                <h3 className="mt-4 font-semibold text-lg">{f.title}</h3>
+                <p className="text-sm text-slate-600 leading-relaxed">{f.desc}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </section>
 
       <section id="how" className="card">
