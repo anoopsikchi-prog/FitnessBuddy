@@ -16,8 +16,8 @@ export default function Page() {
           <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Your AI Fitness Buddy is here! 💪</h1>
           <p className="mt-3 text-slate-600 max-w-2xl mx-auto text-lg">Start in minutes — no login, no signup. Just a friendly onboarding that shapes a plan around your goals, barriers and preferences.</p>
           <div className="mt-8 flex items-center justify-center gap-3">
-            <Link href="/onboarding" className="btn-primary px-6 py-3 text-lg">Get Started (No Login)</Link>
-            <a href="#how" className="btn-ghost px-6 py-3 text-lg">How it works</a>
+            <a href="#how" className="btn-primary px-6 py-3 text-lg">How it works</a>
+            <Link href="/onboarding" className="btn-ghost px-6 py-3 text-lg">Start now — it's free</Link>
           </div>
         </div>
       </section>
@@ -71,9 +71,6 @@ export default function Page() {
         </div>
       </section>
 
-      <div className="flex justify-center">
-        <Link href="/onboarding" className="btn-primary px-8 py-4 text-lg font-semibold">Start now — it's free</Link>
-      </div>
     </div>
   );
 }
