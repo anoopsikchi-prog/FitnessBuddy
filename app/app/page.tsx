@@ -1,8 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
 import { testConnection, startAnonymously, getCurrentUser, signOut } from '@/src/lib/supabase'
+
+interface User {
+  id: string
+  email?: string
+}
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null)
@@ -45,9 +49,9 @@ export default function HomePage() {
     
     const result = await startAnonymously()
     if (result.success) {
-      setUser(result.user || null)
+      setUser(result.user)
       setCurrentPhase('onboarding')
-      console.log('✅ User session created:', result.user?.id)
+      console.log('✅ User session created:', result.user.id)
     } else {
       console.error('❌ Failed to start session:', result.error)
       alert('Failed to start. Please refresh and try again.')
