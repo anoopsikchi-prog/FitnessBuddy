@@ -206,12 +206,90 @@ export default function OnboardingPage() {
 
       {step === 9 && (
         <section className="card">
-          <div className="card-body text-center py-16">
+          <div className="card-body py-16">
             <div className="text-6xl mb-6">🎉</div>
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Your Personalized Plan is Ready!</h2>
-            <p className="text-slate-600 text-lg mb-8 max-w-2xl mx-auto">Daily habits, weekly targets, and meal support — tailored from your choices.</p>
-            <div className="mt-4 flex items-center justify-center gap-4">
-              <button className="btn-primary px-8 py-4 text-lg font-semibold" onClick={()=> { completeOnboarding(); router.push("/app"); }}>Go to Dashboard</button>
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent text-center">Your Personalized Plan is Ready!</h2>
+            <p className="text-slate-600 text-lg mb-8 max-w-2xl mx-auto text-center">Here's your tailored fitness advice based on your goals and preferences:</p>
+            
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+              <div className="card bg-gradient-to-br from-blue-50 to-indigo-50">
+                <div className="card-body">
+                  <h3 className="font-bold text-lg mb-3 text-indigo-700">🎯 Your Goal</h3>
+                  <p className="text-slate-700 capitalize mb-2">{state.onboarding.goal?.replace('_', ' ')}</p>
+                  <p className="text-sm text-slate-600">Focus on consistent small steps rather than dramatic changes. Progress compounds over time.</p>
+                </div>
+              </div>
+              
+              <div className="card bg-gradient-to-br from-purple-50 to-pink-50">
+                <div className="card-body">
+                  <h3 className="font-bold text-lg mb-3 text-purple-700">🏃 Activity Level</h3>
+                  <p className="text-slate-700 capitalize mb-2">{state.onboarding.activity?.replace('_', ' ')}</p>
+                  <p className="text-sm text-slate-600">Build from where you are now. Even 10 minutes of movement daily creates momentum.</p>
+                </div>
+              </div>
+              
+              <div className="card bg-gradient-to-br from-green-50 to-emerald-50">
+                <div className="card-body">
+                  <h3 className="font-bold text-lg mb-3 text-green-700">💪 Focus Habits</h3>
+                  <p className="text-slate-700 mb-2">{state.onboarding.habits.length} selected</p>
+                  <p className="text-sm text-slate-600">Start with just one habit. Master it for 2 weeks before adding another.</p>
+                </div>
+              </div>
+              
+              {state.onboarding.barriers.length > 0 && (
+                <div className="card bg-gradient-to-br from-amber-50 to-orange-50">
+                  <div className="card-body">
+                    <h3 className="font-bold text-lg mb-3 text-amber-700">⚠️ Your Barriers</h3>
+                    <p className="text-slate-700 mb-2">{state.onboarding.barriers.length} identified</p>
+                    <p className="text-sm text-slate-600">Plan for obstacles. Have a "Plan B" ready for busy days or low motivation.</p>
+                  </div>
+                </div>
+              )}
+              
+              <div className="card bg-gradient-to-br from-rose-50 to-red-50">
+                <div className="card-body">
+                  <h3 className="font-bold text-lg mb-3 text-rose-700">🍽️ Meal Planning</h3>
+                  <p className="text-slate-700 mb-2 capitalize">{state.onboarding.mealCoach || 'Not set'}</p>
+                  <p className="text-sm text-slate-600">Prep when you have energy. Batch cook proteins and chop vegetables ahead.</p>
+                </div>
+              </div>
+              
+              <div className="card bg-gradient-to-br from-teal-50 to-cyan-50">
+                <div className="card-body">
+                  <h3 className="font-bold text-lg mb-3 text-teal-700">🧠 Mindset Tips</h3>
+                  <p className="text-slate-700 mb-2">Stay flexible</p>
+                  <p className="text-sm text-slate-600">Progress isn't linear. Bad days don't erase good weeks. Just get back on track tomorrow.</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl mb-8">
+              <h3 className="font-bold text-xl mb-4 text-center">🚀 Your Next Steps</h3>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="text-left">
+                  <h4 className="font-semibold mb-2">Week 1-2: Foundation</h4>
+                  <ul className="text-sm text-slate-700 space-y-1">
+                    <li>• Pick ONE habit to focus on</li>
+                    <li>• Set a specific time each day</li>
+                    <li>• Track completion (even 1 minute counts)</li>
+                    <li>• Celebrate small wins</li>
+                  </ul>
+                </div>
+                <div className="text-left">
+                  <h4 className="font-semibold mb-2">Week 3-4: Building</h4>
+                  <ul className="text-sm text-slate-700 space-y-1">
+                    <li>• Gradually increase intensity/duration</li>
+                    <li>• Add a second habit if first is solid</li>
+                    <li>• Plan for obstacles and setbacks</li>
+                    <li>• Find an accountability partner</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <p className="text-lg font-semibold text-slate-800 mb-2">Remember: You've got this! 💪</p>
+              <p className="text-slate-600 mb-6">Small consistent actions beat perfect plans that never start.</p>
               <button className="btn-ghost px-6 py-3" onClick={()=> setStep(8)}>Back</button>
             </div>
           </div>
