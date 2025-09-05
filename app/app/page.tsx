@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { testConnection, startAnonymously, getCurrentUser, signOut } from '../src/lib/supabase.js'
+import { testConnection, startAnonymously, getCurrentUser, signOut } from '@/src/lib/supabase'
 
 interface User {
   id: string
