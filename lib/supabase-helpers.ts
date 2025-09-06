@@ -1,8 +1,18 @@
 import { supabase } from './supabase-client'
 import type { UserProfile, OnboardingData, DailyMetrics, HabitTracking } from './supabase-client'
 
+// Safety check for Supabase client
+const checkSupabase = () => {
+  if (!supabase) {
+    console.warn('⚠️ Supabase not configured - using local storage fallback')
+    return false
+  }
+  return true
+}
+
 // User Profile helpers
 export const createUserProfile = async (userId: string, displayName: string): Promise<UserProfile | null> => {
+  if (!checkSupabase()) return null
   try {
     const { data, error } = await supabase
       .from('user_profiles')
