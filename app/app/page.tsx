@@ -30,7 +30,7 @@ export default function HomePage() {
       
       // Check for existing user session
       const existingUser = await getCurrentUser()
-      if (existingUser) {
+      if (existingUser && existingUser !== undefined) {
         setUser(existingUser)
         setCurrentPhase('main')
         console.log('✅ Existing user found:', existingUser.id)
