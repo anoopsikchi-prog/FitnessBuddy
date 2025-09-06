@@ -1,6 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { loadState, saveState, clearState } from "@/lib/storage";
+import { supabase } from "@/lib/supabase-client";
 import type { FitBuddyState, FitnessGoal, ActivityLevel, Barrier, Habit, MealCoachPref, Demographics } from "@/lib/types";
 
 function defaultState(): FitBuddyState {
@@ -39,6 +40,23 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<FitBuddyState>(() => loadState() ?? defaultState());
 
   useEffect(() => { saveState(state); }, [state]);
+
+  // Test Supabase connection on app load
+  useEffect(() => {
+    const testConnection = async () => {
+      try {
+        const { data, error } = await supabase.from('user_profiles').select('count').limit(1);
+        if (error) {
+          console.warn('Supabase connection issue:', error.message);
+        } else {
+          console.log('✅ Supabase connected successfully');
+        }
+      } catch (err) {
+        console.warn('Supabase connection test failed:', err);
+      }
+    };
+    testConnection();
+  }, []);
 
   const api = useMemo(() => ({
     state,
